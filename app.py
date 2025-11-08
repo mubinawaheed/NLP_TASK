@@ -3,7 +3,6 @@ import streamlit as st
 from rag import get_user_docs, process_pdf
 
 import re
-# Page configuration
 st.set_page_config(
     page_title="RAG Chat Assistant",
     page_icon="🤖",
@@ -11,7 +10,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Initialize session state
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 
@@ -35,9 +33,7 @@ def is_valid_email(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(pattern, email) is not None
 
-# ======================
 # EMAIL VERIFICATION PAGE
-# ======================
 if not st.session_state.email_verified:
     # Hide sidebar
     st.markdown("""
@@ -90,8 +86,6 @@ if not st.session_state.email_verified:
 
     st.stop()
 
-# MAIN APP
-
 # Sidebar Navigation
 with st.sidebar:
     st.title("AI Chat Assistant")
@@ -132,9 +126,7 @@ with st.sidebar:
         st.session_state.messages = []
         st.rerun()
 
-# ======================
 # CHAT PAGE
-# ======================
 if st.session_state.current_page == "💬 Chat":
     st.title("💬 Chat Assistant")
     st.caption("Ask questions about your uploaded documents")
@@ -178,10 +170,7 @@ if st.session_state.current_page == "💬 Chat":
                 st.session_state.messages = []
                 st.rerun()
 
-# ======================
 # DATA MANAGEMENT PAGE
-# ======================
-
 elif st.session_state.current_page == "📚 Data Management":
     st.title("📚 Data Management")
     st.caption("Upload and index your PDF documents")
@@ -237,10 +226,6 @@ elif st.session_state.current_page == "📚 Data Management":
     
     if st.session_state.indexed:
         st.success("✅ Documents are indexed and ready for querying")
-        
-        # Option to re-index
-        if st.button("🔄 Re-index Documents"):
-            st.session_state.indexed = False
-            st.rerun()
+      
     else:
         st.info("📋 Upload documents and click 'Index Documents' to begin")

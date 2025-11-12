@@ -4,6 +4,6 @@ faiss-cpu
 sentence-transformers
 transformers
 torch
-PyPDF2
+pypdf
 requests
 python-dotenv

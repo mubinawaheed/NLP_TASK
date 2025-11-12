@@ -49,3 +49,5 @@ The official Gemini SDK caused **version errors and compatibility issues** in th
    ```
    GEMINI_API_KEY=YOUR_API_KEY
    ```
+
+   Command to run the project : streamlit run app.py

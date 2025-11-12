@@ -1,0 +1,9 @@
+langchain-community
+langchain-text-splitters
+faiss-cpu
+sentence-transformers
+transformers
+torch
+PyPDF2
+requests
+python-dotenv

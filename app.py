@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from rag import get_user_docs, process_pdf
+from rag import get_user_docs, process_pdf,get_response
 
 import re
 st.set_page_config(
@@ -150,16 +150,11 @@ if st.session_state.current_page == "💬 Chat":
         # Generate assistant response
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                # TODO: Add RAG logic here
-                import time
-                time.sleep(1)  # Simulate processing
-                
-                # Placeholder response
-                response = f"This is a placeholder response to: '{prompt}'. RAG logic will be implemented here."
-                st.markdown(response)
+                k=get_response(st.session_state.user_email, prompt, st.session_state.messages)
+                st.markdown(k)
         
         # Add assistant response to chat
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        st.session_state.messages.append({"role": "assistant", "content": k})
     
     # Clear chat button at bottom
     if st.session_state.messages:
@@ -176,10 +171,6 @@ elif st.session_state.current_page == "📚 Data Management":
     st.caption("Upload and index your PDF documents")
     
     st.subheader("Upload Documents")
-    # if st.session_state.user_email:
-        # existing_files = get_user_docs(st.session_state.user_email).list_documents()
-        # if existing_files:
-        #     st.info(f"📂 You have already indexed {len(existing_files)} documents. Upload more to add to your collection.")
     uploaded_files = st.file_uploader(
         "Choose PDF files (Maximum 10 files)",
         type=['pdf'],
@@ -204,19 +195,21 @@ elif st.session_state.current_page == "📚 Data Management":
         with col2:
             if st.button("🔄 Index Documents", type="primary", use_container_width=True):
                 with st.spinner("Indexing documents... This may take a moment."):
-                    # TODO: Add indexing logic here
                     save_path = f"./uploads/{st.session_state.user_email}/"
                     os.makedirs(save_path, exist_ok=True)
-                    pdf_path = os.path.join(save_path, uploaded_files[0].name)
-                    with open(pdf_path, "wb") as f:
-                        f.write( uploaded_files[0].getbuffer())
-                    vectordb = process_pdf(pdf_path, st.session_state.user_email)
-                    import time
-                    time.sleep(2)  # Simulate processing
+
+                    for uploaded_file in uploaded_files:
+                        pdf_path = os.path.join(save_path, uploaded_file.name)
+                        # Save each uploaded file
+                        with open(pdf_path, "wb") as f:
+                            f.write(uploaded_file.getbuffer())
+
+                        # Process the PDF and add to FAISS
+                        vectordb = process_pdf(pdf_path, st.session_state.user_email)
+
                     st.session_state.indexed = True
-                    st.success("✅ Documents indexed successfully!")
-                    st.balloons()
-                    time.sleep(1)
+                    st.success("✅ All documents indexed successfully!")
+
     else:
         st.info("👆 Upload PDF files to get started")
     
